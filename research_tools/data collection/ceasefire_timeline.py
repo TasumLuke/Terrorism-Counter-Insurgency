@@ -150,8 +150,8 @@ MENU = """
   3  ceasefire starts only
   4  wiki date cross-check
   5  export event log csv
-  6  cpc series  —  nagaland
-  7  cpc series  —  mizoram
+  6  cpc series,  nagaland
+  7  cpc series,  mizoram
   8  export cpc csv
   9  load acled csv
   a  add event manually
