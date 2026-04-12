@@ -68,7 +68,7 @@ def stars(p):
     return ""
 
 
-#NEGATIVE BINOMIAL
+#neg binomial 
 
 def negbin(y, X, var_names=None):
     n, k = X.shape
@@ -105,7 +105,7 @@ def print_reg(r, title=""):
         print(f"    {v:18s} {d['b']:8.3f} ({d['se']:.3f})  t={d['t']:.2f} {stars(d['p'])}")
 
 
-#OLS WITH MULTIPLE SE
+#ols stuff
 
 def ols_robust(y, X, var_names=None, maxlag=2):
     n, k = X.shape
@@ -133,7 +133,7 @@ def print_ols(r, title=""):
         print(f"    {v:18s} {d['b']:8.3f}  HC3=({d['se_hc3']:.3f}) NW=({d['se_nw']:.3f}) {stars(d['p_hc3'])}")
 
 
-#INTERRUPTED TIME SERIES
+# -- INTERRUPTED TIME SERIES --
 
 def its(years, outcome, breakpoint, maxlag=2):
     ylist = list(years)
@@ -167,8 +167,7 @@ def print_its(r, title=""):
         print(f"    {nm:16s} {d['b']:10.2f} ({d['se']:.2f}) t={d['t']:.2f} {stars(d['p'])}")
 
 
-#MEDIATION
-
+#mediation
 def mediate(y, mediator, treatment, nboot=2000, seed=42):
     ln_y = np.log(y + 1)
     n = len(y)
@@ -232,3 +231,67 @@ def print_med(r):
     print(f"  total:   {r['total']:.3f}  [{r['total_ci'][0]:.3f}, {r['total_ci'][1]:.3f}]")
     print(f"  prop:    {r['prop']:.3f}  [{r['prop_ci'][0]:.3f}, {r['prop_ci'][1]:.3f}]")
     print(f"  valid boots: {r['nboot']}")
+
+
+#figures
+
+def fig_factions(traces, names, colors, vlines, path):
+    import matplotlib; matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    fig, ax = plt.subplots(figsize=(11, 6))
+    styles = [("o", "-"), ("s", "--"), ("^", "-."), ("D", ":")]
+    for i, (trace, nm, col) in enumerate(zip(traces, names, colors)):
+        x, y = zip(*trace)
+        mk, ls = styles[i % len(styles)]
+        ax.plot(x, y, marker=mk, ls=ls, color=col, lw=2, ms=5, label=nm)
+
+    for yr, col, ls, lab in vlines:
+        ax.axvline(yr, color=col, ls=ls, lw=0.8, alpha=0.5, label=lab)
+
+    ax.set_xlabel("Year"); ax.set_ylabel("Active Factions")
+    ax.set_ylim(bottom=0)
+    ax.legend(loc="upper left", fontsize=7, framealpha=0.9)
+    ax.grid(alpha=0.15)
+    fig.tight_layout(); fig.savefig(path, dpi=300); plt.close()
+    print(f"  wrote {path}")
+
+
+def fig_dual_axis(years, bars, line, bar_label, line_label, title, vlines, path):
+    import matplotlib; matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    fig, ax1 = plt.subplots(figsize=(11, 5.5))
+    ax1.bar(years, bars, color="#cc3333", alpha=0.7, width=0.7, label=bar_label)
+    ax1.set_ylabel(bar_label, color="#aa2222")
+    ax1.tick_params(axis="y", labelcolor="#aa2222")
+    for yr, ls in vlines:
+        ax1.axvline(yr, color="#888", ls=ls, lw=0.7, alpha=0.5)
+
+    ax2 = ax1.twinx()
+    ax2.plot(years, line, "D-", color="#1a4488", lw=2, ms=4, label=line_label)
+    ax2.set_ylabel(line_label, color="#1a4488")
+    ax2.tick_params(axis="y", labelcolor="#1a4488")
+
+    h1, l1 = ax1.get_legend_handles_labels()
+    h2, l2 = ax2.get_legend_handles_labels()
+    ax1.legend(h1+h2, l1+l2, loc="upper right", fontsize=8)
+    ax1.set_title(title, fontsize=10, loc="left")
+    ax1.set_xlabel("Year")
+    fig.tight_layout(); fig.savefig(path, dpi=300); plt.close()
+    print(f"  wrote {path}")
+
+
+def fig_series(years, vals, break_yr, title, path):
+    import matplotlib; matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    fig, ax = plt.subplots(figsize=(10, 5))
+    ax.fill_between(years, vals, alpha=0.2, color="#1a4488")
+    ax.plot(years, vals, "o-", color="#1a4488", lw=1.5, ms=4)
+    if break_yr:
+        ax.axvline(break_yr, color="#888", ls=":", lw=1, alpha=0.7)
+    ax.set(xlabel="Year", ylabel="Fatalities", title=title)
+    ax.grid(alpha=0.15)
+    fig.tight_layout(); fig.savefig(path, dpi=300); plt.close()
+    print(f"  wrote {path}")
