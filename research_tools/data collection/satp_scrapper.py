@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 import csv
 import json
 import os
@@ -10,7 +9,6 @@ from urllib.request import urlopen, Request
 from urllib.error import URLError, HTTPError
 
 BASE = "https://www.satp.org"
-
 pages = {
     # assessment pages
     "nagaland_assess":  "/terrorism-assessment/india-insurgencynortheast-nagaland",
@@ -56,7 +54,6 @@ class TableParser(HTMLParser):
     def handle_data(self, data):
         if self._in_cell: self._cell += data
 
-
 def fetch(path, delay=1.5):
     url = BASE + path if path.startswith("/") else path
     req = Request(url, headers={"User-Agent": "Mozilla/5.0"})
@@ -71,7 +68,6 @@ def fetch(path, delay=1.5):
         print(f"  error: {e.reason}")
     return None
 
-
 def get_tables(html):
     p = TableParser()
     p.feed(html)
@@ -84,7 +80,6 @@ def has_years(table):
             if re.search(r"19[89]\d|200\d|201\d|202\d", cell):
                 return True
     return False
-
 
 def save_csv(rows, fname):
     os.makedirs("satp_data", exist_ok=True)
@@ -113,7 +108,6 @@ def scrape_assessment(key):
     for row in t[:4]:
         print("    " + " | ".join(c[:22] for c in row))
     save_csv(t, f"{key}.csv")
-
 
 def scrape_profile(key):
     path = pages.get(key)
@@ -171,8 +165,6 @@ MENU = """
   s  show all registered urls
   q  quit
 """
-
-
 def main():
     print(MENU)
     while True:
