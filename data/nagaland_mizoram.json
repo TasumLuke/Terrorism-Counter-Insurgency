@@ -1,0 +1,435 @@
+import math
+import numpy as np
+import statsmodels.api as sm
+
+
+# ---------------------------------------------------------------
+# RCI CONSTRUCTION
+# ---------------------------------------------------------------
+
+def hhi(shares):
+    return sum(s * s for s in shares)
+
+
+def ofs(shares):
+    return 1.0 - hhi(shares)
+
+
+def ivr(internecine, total):
+    return internecine / (total + 1)
+
+
+def cpc(ceasefires):
+    if hasattr(ceasefires, "__iter__"):
+        return sum(ceasefires)
+    return ceasefires
+
+
+def normalize_series(values):
+    lo, hi = min(values), max(values)
+    if hi - lo < 1e-12:
+        return [0.0] * len(values)
+    return [(v - lo) / (hi - lo) for v in values]
+
+
+def build_rci(ofs_series, ivr_series, cpc_series, alpha, beta, gamma):
+    if abs(alpha + beta + gamma - 1.0) > 1e-9:
+        raise ValueError(f"weights must sum to 1, got {alpha + beta + gamma}")
+
+    o = normalize_series(ofs_series)
+    v = normalize_series(ivr_series)
+    c = normalize_series(cpc_series)
+
+    return [
+        1.0 - (alpha * o[i] + beta * v[i] + gamma * c[i])
+        for i in range(len(o))
+    ]
+
+
+# ---------------------------------------------------------------
+# PANEL ASSEMBLY
+# ---------------------------------------------------------------
+
+def lag_by_group(values, groups):
+    out = [None] * len(values)
+    prev = {}
+    for i in range(len(values)):
+        g = groups[i]
+        out[i] = prev.get(g, None)
+        prev[g] = values[i]
+    return out
+
+
+def build_panel(case_records):
+    years, Y, rci, factions, ext, strategy, state = [], [], [], [], [], [], []
+
+    for case_name, recs in case_records.items():
+        for rec in recs:
+            years.append(rec["year"])
+            Y.append(rec["outcome"])
+            rci.append(rec["rci"])
+            factions.append(rec.get("factions", 1))
+            ext.append(rec.get("ext_support", 0))
+            strategy.append(rec.get("strategy_code", 0))
+            state.append(case_name)
+
+    rci_lag = lag_by_group(rci, state)
+
+    keep = [i for i in range(len(rci_lag)) if rci_lag[i] is not None]
+
+    return {
+        "year":     np.array([years[i] for i in keep]),
+        "Y":        np.array([Y[i] for i in keep], dtype=float),
+        "rci_lag":  np.array([rci_lag[i] for i in keep], dtype=float),
+        "factions": np.array([factions[i] for i in keep], dtype=float),
+        "ext":      np.array([ext[i] for i in keep], dtype=float),
+        "strategy": np.array([strategy[i] for i in keep], dtype=float),
+        "state":    [state[i] for i in keep],
+    }
+
+
+# ---------------------------------------------------------------
+# NEGATIVE BINOMIAL
+# ---------------------------------------------------------------
+
+def negbin_regression(Y, X, labels=None):
+    try:
+        fit = sm.NegativeBinomial(Y, X).fit(disp=0, maxiter=500)
+    except Exception as exc:
+        return {"error": str(exc)}
+
+    if labels is None:
+        labels = [f"x{i}" for i in range(X.shape[1])]
+
+    results = {
+        "n": len(Y),
+        "llf": fit.llf,
+        "aic": fit.aic,
+        "converged": fit.mle_retvals.get("converged", True),
+        "coefficients": {},
+    }
+
+    for i, lab in enumerate(labels):
+        results["coefficients"][lab] = {
+            "coef": fit.params[i],
+            "se": fit.bse[i],
+            "t": abs(fit.params[i] / fit.bse[i]) if fit.bse[i] > 0 else 0,
+            "p": fit.pvalues[i],
+        }
+
+    alpha = fit.params[-1] if hasattr(fit, "params") else None
+    lr_stat = 2 * (fit.llf - sm.Poisson(Y, X).fit(disp=0, maxiter=200).llf)
+    results["lr_vs_poisson"] = lr_stat
+
+    return results
+
+
+def run_negbin_suite(panel, case_filter=None):
+    if case_filter:
+        mask = np.array([s == case_filter for s in panel["state"]])
+        Y = panel["Y"][mask]
+        rci = panel["rci_lag"][mask]
+        fac = panel["factions"][mask]
+        ext = panel["ext"][mask]
+    else:
+        Y = panel["Y"]
+        rci = panel["rci_lag"]
+        fac = panel["factions"]
+        ext = panel["ext"]
+        state_d = panel["strategy"]
+
+    X_biv = sm.add_constant(rci)
+    biv = negbin_regression(Y, X_biv, ["const", "rci_lag"])
+
+    if case_filter:
+        X_ctrl = sm.add_constant(np.column_stack([rci, ext, np.log(fac + 0.01)]))
+        ctrl_labels = ["const", "rci_lag", "ext_support", "ln_factions"]
+    else:
+        X_ctrl = sm.add_constant(np.column_stack([rci, ext, np.log(fac + 0.01), state_d]))
+        ctrl_labels = ["const", "rci_lag", "ext_support", "ln_factions", "state_fe"]
+
+    ctrl = negbin_regression(Y, X_ctrl, ctrl_labels)
+    return {"bivariate": biv, "controlled": ctrl}
+
+
+# ---------------------------------------------------------------
+# OLS WITH MULTIPLE SE CORRECTIONS
+# ---------------------------------------------------------------
+
+def ols_multi_se(Y, X, labels=None, maxlags=2):
+    ln_Y = np.log(Y + 1)
+
+    hc3 = sm.OLS(ln_Y, X).fit(cov_type="HC3")
+    nw = sm.OLS(ln_Y, X).fit(cov_type="HAC", cov_kwds={"maxlags": maxlags})
+    plain = sm.OLS(ln_Y, X).fit()
+
+    if labels is None:
+        labels = [f"x{i}" for i in range(X.shape[1])]
+
+    results = {"n": len(Y), "r2": hc3.rsquared, "coefficients": {}}
+
+    for i, lab in enumerate(labels):
+        results["coefficients"][lab] = {
+            "coef": hc3.params[i],
+            "se_hc3": hc3.bse[i],
+            "se_nw": nw.bse[i],
+            "se_ols": plain.bse[i],
+            "p_hc3": hc3.pvalues[i],
+        }
+
+    return results
+
+
+# ---------------------------------------------------------------
+# INTERRUPTED TIME SERIES
+# ---------------------------------------------------------------
+
+def its_analysis(years, outcome, break_year, maxlags=2):
+    n = len(years)
+    t = np.arange(n, dtype=float)
+    year_list = list(years)
+
+    if break_year not in year_list:
+        return {"error": f"{break_year} not in series"}
+
+    bp = year_list.index(break_year)
+    post = (t >= bp).astype(float)
+    post_elapsed = post * (t - bp)
+
+    X = np.column_stack([np.ones(n), t, post, post_elapsed])
+    Y = np.array(outcome, dtype=float)
+
+    fit = sm.OLS(Y, X).fit(cov_type="HAC", cov_kwds={"maxlags": maxlags})
+
+    names = ["intercept", "pre_trend", "level_shift", "slope_change"]
+    results = {"r2": fit.rsquared, "n": n, "break_year": break_year, "params": {}}
+
+    for i, name in enumerate(names):
+        results["params"][name] = {
+            "coef": fit.params[i],
+            "se": fit.bse[i],
+            "t": abs(fit.params[i] / fit.bse[i]) if fit.bse[i] > 0 else 0,
+            "p": fit.pvalues[i],
+        }
+
+    return results
+
+
+# ---------------------------------------------------------------
+# CAUSAL MEDIATION (BARON-KENNY WITH BOOTSTRAP)
+# ---------------------------------------------------------------
+
+def mediation_bootstrap(Y, mediator, treatment, n_boot=2000, seed=42):
+    ln_Y = np.log(Y + 1)
+    n = len(Y)
+
+    m_a = sm.OLS(mediator, sm.add_constant(treatment)).fit()
+    a = m_a.params[1]
+
+    X_b = sm.add_constant(np.column_stack([mediator, treatment]))
+    m_b = sm.OLS(ln_Y, X_b).fit()
+    b = m_b.params[1]
+    c_prime = m_b.params[2]
+
+    m_total = sm.OLS(ln_Y, sm.add_constant(treatment)).fit()
+    c = m_total.params[1]
+
+    acme = a * b
+    proportion = acme / c if abs(c) > 1e-10 else float("nan")
+
+    rng = np.random.default_rng(seed)
+    boot_acme = np.empty(n_boot)
+    boot_total = np.empty(n_boot)
+
+    for i in range(n_boot):
+        idx = rng.integers(0, n, size=n)
+        yb, mb, tb = Y[idx], mediator[idx], treatment[idx]
+        ly = np.log(yb + 1)
+        try:
+            ba = sm.OLS(mb, sm.add_constant(tb)).fit()
+            bb = sm.OLS(ly, sm.add_constant(np.column_stack([mb, tb]))).fit()
+            bt = sm.OLS(ly, sm.add_constant(tb)).fit()
+            boot_acme[i] = ba.params[1] * bb.params[1]
+            boot_total[i] = bt.params[1]
+        except Exception:
+            boot_acme[i] = np.nan
+            boot_total[i] = np.nan
+
+    valid = ~np.isnan(boot_acme)
+    ba = boot_acme[valid]
+    bt = boot_total[valid]
+    bd = bt - ba
+
+    return {
+        "path_a": a,
+        "path_b": b,
+        "acme": acme,
+        "acme_ci": (float(np.percentile(ba, 2.5)), float(np.percentile(ba, 97.5))),
+        "direct": c_prime,
+        "direct_ci": (float(np.percentile(bd, 2.5)), float(np.percentile(bd, 97.5))),
+        "total": c,
+        "total_ci": (float(np.percentile(bt, 2.5)), float(np.percentile(bt, 97.5))),
+        "proportion": proportion,
+        "n_boot_valid": int(valid.sum()),
+    }
+
+
+# ---------------------------------------------------------------
+# ROBUSTNESS: ALTERNATIVE WEIGHTS
+# ---------------------------------------------------------------
+
+def robustness_weights(Y, ofs_raw, ivr_raw, cpc_raw, schemes, panel_builder_fn):
+    results = {}
+    for name, (a, b, g) in schemes.items():
+        rci = build_rci(ofs_raw, ivr_raw, cpc_raw, a, b, g)
+        rci_lag = [None] + rci[:-1]
+        keep = [i for i in range(len(rci_lag)) if rci_lag[i] is not None]
+        Y_r = np.array([Y[i] for i in keep], dtype=float)
+        rci_r = np.array([rci_lag[i] for i in keep], dtype=float)
+        X = sm.add_constant(rci_r)
+        res = negbin_regression(Y_r, X, ["const", "rci_lag"])
+        results[name] = res
+    return results
+
+
+# ---------------------------------------------------------------
+# MARGINAL EFFECT CALCULATION
+# ---------------------------------------------------------------
+
+def marginal_effect_pct(coef, sd):
+    return (math.exp(abs(coef) * sd) - 1) * 100
+
+
+def pct_change(before, after):
+    return (before - after) / before * 100
+
+
+# ---------------------------------------------------------------
+# SIGNIFICANCE TESTING
+# ---------------------------------------------------------------
+
+def significance_stars(p):
+    if p < 0.01:
+        return "***"
+    if p < 0.05:
+        return "**"
+    if p < 0.10:
+        return "*"
+    return ""
+
+
+def t_threshold(stars):
+    return {"***": 2.576, "**": 1.96, "*": 1.645}.get(stars, 0)
+
+
+# ---------------------------------------------------------------
+# PRINTING HELPERS
+# ---------------------------------------------------------------
+
+def print_negbin(results, label=""):
+    if "error" in results:
+        print(f"  {label}: FAILED ({results['error']})")
+        return
+    print(f"  {label}  (N={results['n']}, LL={results['llf']:.1f}, AIC={results['aic']:.1f})")
+    for name, vals in results["coefficients"].items():
+        sig = significance_stars(vals["p"])
+        print(f"    {name:16s}  {vals['coef']:8.3f}  ({vals['se']:.3f})  t={vals['t']:.2f} {sig}")
+
+
+def print_its(results, label=""):
+    if "error" in results:
+        print(f"  {label}: {results['error']}")
+        return
+    print(f"  {label}  (break={results['break_year']}, R2={results['r2']:.3f}, N={results['n']})")
+    for name, vals in results["params"].items():
+        sig = significance_stars(vals["p"])
+        print(f"    {name:16s}  {vals['coef']:10.2f}  ({vals['se']:.2f})  p={vals['p']:.4f} {sig}")
+
+
+def print_mediation(results):
+    print(f"  path a (treatment->mediator):  {results['path_a']:.3f}")
+    print(f"  path b (mediator->outcome):    {results['path_b']:.3f}")
+    print(f"  ACME:       {results['acme']:.3f}  CI [{results['acme_ci'][0]:.3f}, {results['acme_ci'][1]:.3f}]")
+    print(f"  direct:     {results['direct']:.3f}  CI [{results['direct_ci'][0]:.3f}, {results['direct_ci'][1]:.3f}]")
+    print(f"  total:      {results['total']:.3f}  CI [{results['total_ci'][0]:.3f}, {results['total_ci'][1]:.3f}]")
+    print(f"  proportion: {results['proportion']:.3f}")
+
+
+def print_ols(results, label=""):
+    print(f"  {label}  (N={results['n']}, R2={results['r2']:.3f})")
+    for name, vals in results["coefficients"].items():
+        sig = significance_stars(vals["p_hc3"])
+        print(f"    {name:16s}  {vals['coef']:8.3f}  HC3=({vals['se_hc3']:.3f})  NW=({vals['se_nw']:.3f}) {sig}")
+
+
+# ---------------------------------------------------------------
+# FIGURE BUILDING
+# ---------------------------------------------------------------
+
+def plot_factions(traces, labels, colors, events, save_path):
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    fig, ax = plt.subplots(figsize=(11, 6.5))
+    for trace, label, color in zip(traces, labels, colors):
+        x, y = zip(*trace)
+        marker = "o" if color.startswith("#a") or color.startswith("#b") else "s"
+        ls = "-" if marker == "o" else "--"
+        ax.plot(x, y, f"{marker}{ls}", color=color, lw=2, ms=5, label=label)
+
+    for yr, c, ls, lab in events:
+        ax.axvline(yr, color=c, ls=ls, lw=0.8, alpha=0.5, label=lab)
+
+    ax.set(xlabel="Year", ylabel="Active Factions")
+    ax.set_ylim(bottom=0)
+    ax.legend(loc="upper left", fontsize=7.5, framealpha=0.9)
+    ax.grid(True, alpha=0.15)
+    fig.tight_layout()
+    fig.savefig(save_path, dpi=300)
+    plt.close(fig)
+
+
+def plot_fatalities_rci(years, fatalities, rci, title, events, save_path):
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    fig, ax1 = plt.subplots(figsize=(11, 5.5))
+
+    ax1.bar(years, fatalities, color="#cc3333", alpha=0.7, width=0.7)
+    ax1.set_ylabel("Total Fatalities", color="#aa2222")
+    ax1.tick_params(axis="y", labelcolor="#aa2222")
+
+    for yr, ls in events:
+        ax1.axvline(yr, color="#888", ls=ls, lw=0.7, alpha=0.5)
+
+    ax2 = ax1.twinx()
+    ax2.plot(years, rci, "D-", color="#1a4488", lw=2, ms=4)
+    ax2.set_ylabel("RCI", color="#1a4488")
+    ax2.tick_params(axis="y", labelcolor="#1a4488")
+
+    ax1.set_title(title, fontsize=10, loc="left")
+    ax1.set_xlabel("Year")
+    fig.tight_layout()
+    fig.savefig(save_path, dpi=300)
+    plt.close(fig)
+
+
+def plot_timeseries(years, values, break_year, title, save_path):
+    import matplotlib
+    matplotlib.use("Agg")
+    import matplotlib.pyplot as plt
+
+    fig, ax = plt.subplots(figsize=(10, 5))
+    ax.fill_between(years, values, alpha=0.2, color="#1a4488")
+    ax.plot(years, values, "o-", color="#1a4488", lw=1.5, ms=4)
+
+    if break_year:
+        ax.axvline(break_year, color="#888", ls=":", lw=1, alpha=0.7)
+
+    ax.set(xlabel="Year", ylabel="Fatalities", title=title)
+    ax.grid(True, alpha=0.15)
+    fig.tight_layout()
+    fig.savefig(save_path, dpi=300)
+    plt.close(fig)
