@@ -65,7 +65,6 @@ def ucdp_fatalities(conflict_id, label="conflict"):
     data = get_json(url)
     if not data or "Result" not in data:
         print("  nothing"); return []
-
     by_year = {}
     for ev in data["Result"]:
         y = ev.get("year")
@@ -87,8 +86,7 @@ def ucdp_fatalities(conflict_id, label="conflict"):
         w.writerows(rows)
     print(f"\n  → {path}")
     return rows
-
-
+    
 def ucdp_actor_search(fragment):
     enc = quote_plus(fragment)
     url = f"https://ucdpapi.pcr.uu.se/api/actors/23.1?ActorName={enc}&pagesize=20"
@@ -98,7 +96,6 @@ def ucdp_actor_search(fragment):
         print("  nothing"); return
     for a in data["Result"][:10]:
         print(f"  [{a.get('ActorId','?')}]  {a.get('ActorName','?')}")
-
 
 def gdelt_timeline(query, start="1997", end="2023"):
     params = urlencode({
@@ -173,7 +170,6 @@ def wiki_revisions(page):
         for y in sorted(by_year)[-12:]:
             bar = "▪" * min(by_year[y], 50)
             print(f"  {y}  {bar} ({by_year[y]})")
-
 
 MENU = """
   datasource finder
