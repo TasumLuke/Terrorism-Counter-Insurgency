@@ -508,6 +508,44 @@ HC3 SE
 
 As a further check, Table~\ref{tab:ols} reports OLS with two-way fixed effects on $\ln(Y_{ct}+1)$, with four alternative standard error corrections following \citet{bertrand2004}. Sign and significance are preserved under all such corrections, including the wild cluster bootstrap \citep{cameron2008}, which is particularly important given that with only two clusters, asymptotic cluster standard errors are unreliable \citep{cameron2015}. Excluding the influential 2008--2009 period though, which reduces the Nagaland-only coefficient to $-1.219$ (SE: 0.521, $p = 0.019$), still significant at the 5 percent level.
 
+\begin{table}[H]
+\centering
+\caption{OLS with Two-Way Fixed Effects, $\ln(Y_{ct}+1)$}
+\label{tab:ols}
+\begin{threeparttable}
+\small
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{tabular}{lC{2.5cm}C{2.5cm}C{2.5cm}}
+\toprule
+ & (1) & (2) & (3)\\
+ & Bivariate & State + Year FE & Full controls\\
+\midrule
+RCI (lag 1)
+  & $-2.341^{***}$ & $-1.798^{***}$ & $-1.612^{**}$\\[2pt]
+\quad HC3 SE & $(0.389)$ & $(0.441)$ & $(0.508)$\\
+\quad Newey-West SE & $(0.421)$ & $(0.463)$ & $(0.531)$\\
+\quad State-cluster SE & $(0.617)$ & $(0.558)$ & $(0.612)$\\
+\quad WCB $p$-value & $0.006$ & $0.009$ & $0.024$\\[4pt]
+$\ln$(NSDP p.c.)
+  &  &  & $-0.391^{*}$\\
+  &  &  & $(0.224)$\\[4pt]
+External support
+  &  &  & $0.287^{*}$\\
+  &  &  & $(0.168)$\\
+\midrule
+State FE  & No  & Yes & Yes\\
+Year FE   & Yes & Yes & Yes\\
+$N$       &  49 &  49 &  49\\
+$R^2$     & 0.531 & 0.614 & 0.649\\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}\small
+\item \textit{Note:} HC3 \citep{mackinnon1985}; Newey-West \citep{newey1987}; cluster \citep{bertrand2004}; WCB with 9,999 Rademacher draws \citep{cameron2008}. $^{***}p{<}0.01$; $^{**}p{<}0.05$; $^{*}p{<}0.10$.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
 \newpage
 \section*{Notes}
 \noindent\textbf{1.} The 1966 Aizawl air strikes used IAF Dassault Ouragans and Hawker Hunters; approximately 195 bombs were dropped on 5--6 March 1966. Prime Minister Manmohan Singh acknowledged the episode in 2007 as ``a blot on India's democracy.'' \textit{Scroll.in}, 5 March 2016; 
