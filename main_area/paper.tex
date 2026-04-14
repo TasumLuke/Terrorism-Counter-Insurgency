@@ -113,6 +113,15 @@ where higher values indicate greater organizational cohesion.
 
 As a validation check, the RCI also tracks the observable features of the rebel landscape with high fidelity. For instance, when the Forum for Naga Reconciliation conducted twenty-eight inter-factional mediation meetings in 2009 \citep{idsa2009}, the temporary improvement in cohesion coincided with an 85.4 percent collapse in fatalities. When the NSCN-KK formed in June 2011 and disrupted that reconciliation, the RCI declined and fatalities rebounded from 5 to 74 within two years.\footnote{See Note 9.} These within-case patterns provide face validation that the RCI, index captures the theoretical construct it is designed to measure more accurately than other individual indexes.
 
+\subsection{Estimation Strategy}
+
+The dependent variable, annual conflict incident counts, exhibits severe overdispersion (variance-to-mean ratio of 58.6 in the Nagaland series), which rules out the Poisson model and motivates a negative binomial primary estimator \citep{cameron1998}. This approach is standard in the conflict literature: \citet{cunningham2009} use negative binomial regression for conflict duration counts and \citet{lyall2009} uses it for insurgent attack frequencies. The model specifies:
+\begin{align}
+Y_{ct} &\sim \mathrm{NegBin}(\mu_{ct},\,\phi), \notag\\
+\ln \mu_{ct} &= \beta_0 + \beta_1\,\mathrm{RCI}_{c,t-1} + \beta_2 \ln y_{ct} + \beta_3\,\mathrm{EXT}_{ct} + \delta_c + \tau_t,
+\end{align}
+where $Y_{ct}$ is the annual incident count in state $c$ at year $t$, $y_{ct}$ is net state domestic product per capita,\footnote{See Note 10.} $\mathrm{EXT}_{ct}$ is a binary indicator for active cross-border insurgent support coded from annual assessments, $\delta_c$ is a state fixed effect absorbing all time-invariant state-level unobservables, and $\tau_t$ is a year fixed effect absorbing common shocks. The RCI is lagged one period to address the concern that contemporaneous incident counts might affect within-year factional composition, following the standard practice of using predetermined regressors in count-data panel models \citep{cameron1998}. Standard errors are HC3 heteroskedasticity-robust \citep{mackinnon1985}, which outperform HC0 and HC1 in the small samples characteristic of subnational conflict panels.
+
 \newpage
 \section*{Notes}
 \noindent\textbf{1.} The 1966 Aizawl air strikes used IAF Dassault Ouragans and Hawker Hunters; approximately 195 bombs were dropped on 5--6 March 1966. Prime Minister Manmohan Singh acknowledged the episode in 2007 as ``a blot on India's democracy.'' \textit{Scroll.in}, 5 March 2016; 
