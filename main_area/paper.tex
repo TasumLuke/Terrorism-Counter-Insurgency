@@ -205,6 +205,131 @@ The evolution of factions proliferation in Nagaland is shown in Figure~\ref{fig:
 
 Table~\ref{tab:rci_values} translates this proliferation into respective RCI values. Nagaland's index declines steadily from 0.87 in the pre-split era to 0.23 by 2020--2022, while Mizoram's holds at 0.91--0.95 throughout. The inverse relationship between cohesion and violence is also visible in Figure~\ref{fig:fatalities_dual}, which overlays Nagaland fatalities with the RCI on a secondary axis and presents Mizoram's declining trajectory toward the 1986 Accord. The Mizoram reconstructed series additionally shows fatalities falling from an estimated 490 in 1966 to near zero by 1986, with a complete absence of documented internecine violence.
 
+\begin{table}[H]
+\centering
+\caption{Rebel Cohesion Index: Estimates by Case and Period}
+\label{tab:rci_values}
+\begin{threeparttable}
+\footnotesize
+\setlength{\tabcolsep}{3pt}
+\renewcommand{\arraystretch}{1.1}
+\begin{tabular}{%
+  l
+  p{4.4cm}
+  C{0.9cm}C{0.9cm}C{0.8cm}C{0.8cm}
+  C{1.5cm}
+}
+\toprule
+\textbf{Case} & \textbf{Period}
+  & \textbf{OFS} & \textbf{IVR} & \textbf{CPC} & \textbf{RCI}
+  & \textbf{Factions}\\
+\midrule
+\multirow{4}{*}{Mizoram}
+  & 1966--1975              & 0.05 & 0.00 & 0 & 0.95 & 1 \\
+  & 1976--1979              & 0.12 & 0.02 & 0 & 0.87 & 1--2 \\
+  & 1980--1985              & 0.08 & 0.01 & 0 & 0.91 & 1 \\
+  & 1986 (Accord year)      & 0.05 & 0.00 & 1 & 0.95 & 1 \\
+\midrule
+\multirow{9}{*}{Nagaland}
+  & 1963--1979 (NNC)            & 0.10 & 0.03 & 0 & 0.87 & 1 \\
+  & 1980--1987 (unified NSCN)   & 0.15 & 0.05 & 0 & 0.82 & 1 \\
+  & 1988--1996 (post-split)     & 0.42 & 0.19 & 0 & 0.51 & 2 \\
+  & 1997--2000 (IM ceasefire)   & 0.50 & 0.22 & 1 & 0.41 & 2--3 \\
+  & 2001--2007 (K ceasefire)    & 0.55 & 0.25 & 2 & 0.35 & 3--5 \\
+  & 2008--2010 (FNR period)     & 0.60 & 0.18 & 2 & 0.36 & 4--5 \\
+  & 2011--2014 (KK formation)   & 0.65 & 0.20 & 3 & 0.30 & 5--8 \\
+  & 2015--2019 (Framework)      & 0.70 & 0.12 & 4 & 0.28 & 8--12 \\
+  & 2020--2022                  & 0.76 & 0.08 & 5 & 0.23 & 12--13+ \\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}\small
+\item \textit{Note:} $\mathrm{RCI} = 1-(0.40\,\widehat{\mathrm{OFS}}+0.35\,\widehat{\mathrm{IVR}}+0.25\,\widehat{\mathrm{CPC}})$, min-max normalized. Sources: Notes 11 and 12.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
+\begin{figure}[p]
+\centering
+
+\begin{tikzpicture}
+\begin{axis}[
+  name          = leftA,
+  width         = 13cm,
+  height        = 6.5cm,
+  axis y line*  = left,
+  axis x line*  = bottom,
+  ylabel        = {Total Fatalities},
+  ylabel style  = {font=\small, color=red!75!black},
+  xmin=1998.5,  xmax=2022.5,
+  ymin=0,       ymax=240,
+  xtick         = {1999,2002,2005,2008,2011,2014,2017,2020,2022},
+  xticklabel style = {font=\footnotesize},
+  ytick         = {0,50,100,150,200},
+  yticklabel style = {font=\footnotesize, color=red!75!black},
+  grid          = both,
+  grid style    = {dashed, gray!18},
+  title         = {\textbf{Panel A.}\enspace Nagaland: Fatalities and RCI, 1999--2022},
+  title style   = {font=\small},
+  legend columns = 2,
+  legend style  = {at={(0.5,-0.22)}, anchor=north,
+                   font=\footnotesize, draw=gray!50,
+                   fill=white, inner sep=3pt, column sep=8pt},
+  clip=true,
+]
+\addplot[red!75!black, thick,
+         mark=*, mark size=1.8pt,
+         mark options={solid,fill=red!75!black}]
+  coordinates {
+    (1999,148)(2000,101)(2001,82)(2002,90)(2003,86)(2004,97)
+    (2005,99)(2006,147)(2007,154)(2008,213)(2009,31)(2010,5)
+    (2011,15)(2012,74)(2013,44)(2014,13)(2015,47)(2016,5)
+    (2017,8)(2018,10)(2019,4)(2020,2)(2021,1)(2022,1)
+  };
+\addlegendentry{Fatalities (left)}
+
+\addplot[gray!60, thin, dashed]
+  coordinates {(2001,0)(2001,240)};
+\addlegendentry{2001: NSCN-K CF}
+
+\addplot[gray!50, thin, dotted]
+  coordinates {(2011,0)(2011,240)};
+\addlegendentry{2011: NSCN-KK}
+
+\addplot[gray!40, thin, dashdotted]
+  coordinates {(2015,0)(2015,240)};
+\addlegendentry{2015: Framework}
+\end{axis}
+
+\begin{axis}[
+  name          = rightA,
+  width         = 13cm,
+  height        = 6.5cm,
+  axis y line*  = right,
+  axis x line   = none,
+  ylabel        = {Rebel Cohesion Index},
+  ylabel style  = {font=\small, color=blue!65!black},
+  xmin=1998.5,  xmax=2022.5,
+  ymin=0.14,    ymax=0.52,
+  ytick         = {0.20,0.30,0.40},
+  yticklabel style = {font=\footnotesize, color=blue!65!black},
+  legend style  = {at={(1.0,1.02)}, anchor=north east,
+                   font=\footnotesize, draw=gray!50,
+                   fill=white, inner sep=3pt},
+  clip=true,
+]
+\addplot[blue!65!black, thick, dashed,
+         mark=square*, mark size=1.6pt,
+         mark options={solid,fill=blue!65!black}]
+  coordinates {
+    (1999,0.41)(2000,0.41)(2001,0.41)(2002,0.41)(2003,0.41)(2004,0.35)
+    (2005,0.35)(2006,0.35)(2007,0.35)(2008,0.35)(2009,0.36)(2010,0.36)
+    (2011,0.30)(2012,0.30)(2013,0.30)(2014,0.30)(2015,0.28)(2016,0.28)
+    (2017,0.28)(2018,0.28)(2019,0.28)(2020,0.23)(2021,0.23)(2022,0.23)
+  };
+\addlegendentry{RCI (right)}
+\end{axis}
+\end{tikzpicture}
+
 \newpage
 \section*{Notes}
 \noindent\textbf{1.} The 1966 Aizawl air strikes used IAF Dassault Ouragans and Hawker Hunters; approximately 195 bombs were dropped on 5--6 March 1966. Prime Minister Manmohan Singh acknowledged the episode in 2007 as ``a blot on India's democracy.'' \textit{Scroll.in}, 5 March 2016; 
