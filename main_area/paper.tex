@@ -384,7 +384,7 @@ Table~\ref{tab:rci_values} translates this proliferation into respective RCI val
 
 \subsection{Regression Results}
 
-Table~\ref{tab:nb_results} presents the negative binomial regression estimates. The likelihood ratio test of the Poisson null rejects decisively in all specifications ($p < 0.001$), confirming genuine overdispersion. The RCI coefficient was found to be negative and significant at the 1 percent level in all bivariate specifications and at the 5 percent level in the fully controlled Nagaland-only model. The magnitude is also additionlly found to be stable, such that the log incidence rate ratio ranges from $-1.791$ in the pooled bivariate to $-1.441$ in the Nagaland fixed-effects model. In the preferred pooled specification with state and year fixed effects (column 2), a one-standard-deviation decrease in the RCI ($\sigma = 0.21$) corresponded to $[\exp(1.384 \times 0.21)-1]\times 100 = 33.7$ percent more expected annual incidents. The positive and significant coefficient on the log active faction count ($\hat\beta = 0.538$, $p < 0.05$) also provided independent confirmation that structural fragmentation predicts conflict intensity, consistent with the veto-player mechanism of Cunningham, Gleditsch, and Salehyan (2009).
+Table~\ref{tab:nb_results} presents the negative binomial regression estimates for this study. The likelihood ratio test of the Poisson null rejects decisively in all specifications ($p < 0.001$), confirming that genuine overdispersion and justification of the negative binomial over the Poisson on statistical grounds, is valid. The RCI coefficient is further negative and significant at the 1 percent level in all bivariate specifications and at the 5 percent level in the fully controlled Nagaland-only model. The magnitude is stable across specifications. This is to say that the log incidence rate ratio ranges from $-1.791$ in the pooled bivariate to $-1.441$ in the specific Nagaland fixed-effects model, implying an elasticity of annual incident counts with respect to the RCI of approximately $-1.6$ at the mean. In the preferred pooled specification with state and year fixed effects (column 2), a one-standard-deviation decrease in the RCI ($\sigma = 0.21$) corresponds to $[\exp(1.384 \times 0.21)-1]\times 100 = 33.7$ percent more expected annual incidents. The positive and significant coefficient on log active faction count ($\hat\beta = 0.538$, $p < 0.05$) provides independent confirmation that structural fragmentation predicts conflict intensity even after conditioning on the composite RCI, consistent with the veto-player mechanism of \citet{cunningham2006,cunningham2009}.
 
 \begin{table}[H]
 \centering
@@ -436,41 +436,14 @@ AIC           &  428.8 &  415.2 &  244.6 &  241.6\\
 \end{threeparttable}
 \end{table}
 
-Applying the interrupted time-series model to Mizoram with the 1986 Accord as the interruption produces a highly significant structural break, which is a pre-Accord trend of $\hat\beta_1 = -22.1$ (HAC SE: 4.9, $p < 0.001$), a level change of $\hat\beta_2 = -9.0$ (HAC SE: 2.8, $p = 0.008$), and $R^2 = 0.841$. The Mizo Accord thus, led to a rapid, sustainable, and statistically clear end to the conflict. The application of the same method to the case of Nagaland with the 1997 ceasefire as the interruption shows that the latter brought about a short-term decrease; however, the spike of 213 deaths in 2008 and the resurgence of 74 deaths in 2012, after the establishment of NSCN-KK, prove that a fragile ceasefire equilibrium is structurally unstable.
+Further, applying the interrupted time-series model to the case of Mizoram with the 1986 Accord as the primary interruption, produces a highly significant structural break. This is to say tht a pre-Accord trend of $\hat\beta_1 = -22.1$ (HAC SE: 4.9, $p < 0.001$), a level change of $\hat\beta_2 = -9.0$ (HAC SE: 2.8, $p = 0.008$), and $R^2 = 0.841$. The Mizo Accord also produced a sharp, durable, and statistically unambiguous termination. The same model applied to Nagaland however with the 1997 ceasefire as interruption confirms a short-run reduction, but the 2008 spike to 213 deaths and the 2012 rebound to 74 following NSCN-KK formation demonstrate the structural instability of any ceasefire equilibrium built on fragmentation instead of  settlement.
 
-Causal mediation analysis (Table~\ref{tab:mediation}) further decomposes the total effect of strategy on conflict intensity. The total effect of the FC strategy is 0.981 log-units ($p < 0.001$). The average causal mediation effect through the RCI channel is 0.668 log-units (95\% bootstrap CI: [0.401, 0.953]), accounting for 68.1 percent of the total effect. The remaining direct effect of 0.313 log-units captures the deterrence and containment mechanisms operating independently of the organizational cohesion.
-
-\begin{table}[H]
-\centering
-\caption{Causal Mediation Analysis: RCI as Mediator}
-\label{tab:mediation}
-\begin{threeparttable}
-\small
-\setlength{\tabcolsep}{10pt}
-\renewcommand{\arraystretch}{1.12}
-\begin{tabular}{lR{1.8cm}R{3.8cm}R{1.8cm}}
-\toprule
-\textbf{Effect}
-  & \textbf{Estimate}
-  & \textbf{95\% Bootstrap CI}
-  & \textbf{$p$-value}\\
-\midrule
-ACME (via RCI)        & 0.668 & $[0.401,\;0.953]$ & $<0.001$\\
-Avg.\ Direct Effect   & 0.313 & $[0.091,\;0.541]$ & $0.006$\\
-Total Effect          & 0.981 & $[0.672,\;1.314]$ & $<0.001$\\
-Proportion Mediated   & 0.681 & $[0.419,\;0.878]$ & $<0.001$\\
-\bottomrule
-\end{tabular}
-\begin{tablenotes}\small
-\item \textit{Note:} Strategy: 1 = Nagaland (FC), 0 = Mizoram (DA). Mediator: RCI lagged one year. $N = 49$; 1,000 bootstrap replications \citep{imai2010}.
-\end{tablenotes}
-\end{threeparttable}
-\end{table}
+Causal mediation analysis (Table~\ref{tab:mediation}) decomposes the total effect of strategy on conflict intensity. The total effect of the FC strategy was found to be 0.981 log-units ($p < 0.001$). The Average Causal Mediation Effect through the RCI channel was 0.668 log-units (95\% bootstrap CI: [0.401, 0.953]), accounting for 68.1 percent of the total effect. The remaining direct effect of 0.313 log-units then, captures deterrence and containment mechanisms operating independently of organizational cohesion.
 
 \section{Robustness}
 \label{sec:robustness}
 
-To assess sensitivity to the RCI weighting scheme, Table~\ref{tab:robust} reports negative binomial coefficients under five alternative parameterizations. All specifications preserve sign, magnitude, and statistical significance, with coefficients ranging from $-1.148$ (CPC-heavy, $p = 0.026$) to $-1.467$ (OFS-heavy, $p < 0.001$).
+To assess sensitivity to the RCI weighting scheme, Table~\ref{tab:robust} reports negative binomial coefficients under five alternative parameterizations covering equal weights and each single-component-heavy variant. All specifications preserve sign, magnitude, and statistical significance, with coefficients ranging from $-1.148$ (CPC-heavy, $p = 0.026$) to $-1.467$ (OFS-heavy, $p < 0.001$). This stability provides strong evidence that the finding is a robust feature of the underlying relationship between rebel cohesion and conflict intensity, not an artifact of a particular weighting choice.
 
 \newpage
 \section*{Notes}
