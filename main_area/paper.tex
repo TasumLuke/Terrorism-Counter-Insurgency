@@ -440,6 +440,33 @@ Applying the interrupted time-series model to Mizoram with the 1986 Accord as th
 
 Causal mediation analysis (Table~\ref{tab:mediation}) further decomposes the total effect of strategy on conflict intensity. The total effect of the FC strategy is 0.981 log-units ($p < 0.001$). The average causal mediation effect through the RCI channel is 0.668 log-units (95\% bootstrap CI: [0.401, 0.953]), accounting for 68.1 percent of the total effect. The remaining direct effect of 0.313 log-units captures the deterrence and containment mechanisms operating independently of the organizational cohesion.
 
+\begin{table}[H]
+\centering
+\caption{Causal Mediation Analysis: RCI as Mediator}
+\label{tab:mediation}
+\begin{threeparttable}
+\small
+\setlength{\tabcolsep}{10pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{tabular}{lR{1.8cm}R{3.8cm}R{1.8cm}}
+\toprule
+\textbf{Effect}
+  & \textbf{Estimate}
+  & \textbf{95\% Bootstrap CI}
+  & \textbf{$p$-value}\\
+\midrule
+ACME (via RCI)        & 0.668 & $[0.401,\;0.953]$ & $<0.001$\\
+Avg.\ Direct Effect   & 0.313 & $[0.091,\;0.541]$ & $0.006$\\
+Total Effect          & 0.981 & $[0.672,\;1.314]$ & $<0.001$\\
+Proportion Mediated   & 0.681 & $[0.419,\;0.878]$ & $<0.001$\\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}\small
+\item \textit{Note:} Strategy: 1 = Nagaland (FC), 0 = Mizoram (DA). Mediator: RCI lagged one year. $N = 49$; 1,000 bootstrap replications \citep{imai2010}.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
 \newpage
 \section*{Notes}
 \noindent\textbf{1.} The 1966 Aizawl air strikes used IAF Dassault Ouragans and Hawker Hunters; approximately 195 bombs were dropped on 5--6 March 1966. Prime Minister Manmohan Singh acknowledged the episode in 2007 as ``a blot on India's democracy.'' \textit{Scroll.in}, 5 March 2016; 
