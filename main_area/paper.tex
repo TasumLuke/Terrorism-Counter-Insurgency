@@ -131,6 +131,78 @@ Three aspects of the dynamics of fatalities in the Nagaland case confirm the mec
 
 The evolution of factions proliferation in Nagaland is shown in Figure~\ref{fig:factions} next to the stability of the single MNF faction in Mizoram. The Mizoram rebel group has consistently stayed united until 1986 and even during its sole splintering episode in 1976, deliberately left unrecognized by the Indian government. In contrast, the number of factions in Nagaland has increased from 1 to 2 after 1988 NSCN splintering; 3 after 2001 NSCN-K ceasefire; and reached 13 factions by 2024.
 
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}
+\begin{axis}[
+  width       = 13cm,
+  height      = 9cm,
+  xlabel      = {Year},
+  ylabel      = {Active Insurgent Factions (count)},
+  xmin=1958,  xmax=2028,
+  ymin=0,     ymax=16,
+  xtick       = {1963,1972,1980,1988,1997,2001,2011,2015,2022},
+  xticklabel style = {rotate=40, anchor=east, font=\footnotesize},
+  ytick       = {0,2,4,6,8,10,12,14},
+  yticklabel style = {font=\footnotesize},
+  grid        = both,
+  grid style  = {dashed, gray!20},
+  xlabel style = {font=\small},
+  ylabel style = {font=\small},
+  legend columns = 1,
+  legend style = {at={(0.03,0.97)}, anchor=north west,
+                  font=\small, draw=gray!50, fill=white,
+                  inner sep=4pt, row sep=3pt},
+  clip=true,
+]
+\addplot[color=red!75!black, thick,
+         mark=*, mark size=2pt,
+         mark options={solid,fill=red!75!black}]
+  coordinates {
+    (1963,1)(1975,1)(1980,1)(1988,2)(1997,2)
+    (2001,3)(2007,4)(2011,5)(2015,7)
+    (2017,8)(2019,10)(2021,12)(2024,13)
+  };
+\addlegendentry{Nagaland}
+
+\addplot[color=blue!70!black, thick, dashed,
+         mark=square*, mark size=2pt,
+         mark options={solid,fill=blue!70!black}]
+  coordinates {
+    (1961,1)(1966,1)(1972,1)(1976,2)
+    (1980,1)(1983,1)(1986,1)(1987,0)(1990,0)
+  };
+\addlegendentry{Mizoram (MNF)}
+
+\addplot[red!60!black, thin, dashed]
+  coordinates {(1988,0)(1988,16)};
+\addlegendentry{1988: NSCN split}
+
+\addplot[red!40!black, thin, dotted]
+  coordinates {(2001,0)(2001,16)};
+\addlegendentry{2001: NSCN-K ceasefire}
+
+\addplot[red!40!black, thin, dashdotted]
+  coordinates {(2011,0)(2011,16)};
+\addlegendentry{2011: NSCN-KK formed}
+
+\addplot[red!25!black, thin, loosely dashed]
+  coordinates {(2015,0)(2015,16)};
+\addlegendentry{2015: Framework Agreement}
+
+\addplot[blue!60!black, thin, dashed]
+  coordinates {(1972,0)(1972,16)};
+\addlegendentry{1972: Mizoram UT status}
+
+\addplot[blue!60!black, thin, dotted]
+  coordinates {(1986,0)(1986,16)};
+\addlegendentry{1986: Mizo Peace Accord}
+\end{axis}
+\end{tikzpicture}
+\caption{Proliferation of active insurgent factions in Nagaland versus maintained unity of the MNF in Mizoram, 1963--2024. Sources: Notes 11 and 12; \citet{bhaumik2009}; \citet{choudhury1999}.}
+\label{fig:factions}
+\end{figure}
+
 \newpage
 \section*{Notes}
 \noindent\textbf{1.} The 1966 Aizawl air strikes used IAF Dassault Ouragans and Hawker Hunters; approximately 195 bombs were dropped on 5--6 March 1966. Prime Minister Manmohan Singh acknowledged the episode in 2007 as ``a blot on India's democracy.'' \textit{Scroll.in}, 5 March 2016; 
