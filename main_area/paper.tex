@@ -386,6 +386,56 @@ Table~\ref{tab:rci_values} translates this proliferation into respective RCI val
 
 Table~\ref{tab:nb_results} presents the negative binomial regression estimates. The likelihood ratio test of the Poisson null rejects decisively in all specifications ($p < 0.001$), confirming genuine overdispersion. The RCI coefficient was found to be negative and significant at the 1 percent level in all bivariate specifications and at the 5 percent level in the fully controlled Nagaland-only model. The magnitude is also additionlly found to be stable, such that the log incidence rate ratio ranges from $-1.791$ in the pooled bivariate to $-1.441$ in the Nagaland fixed-effects model. In the preferred pooled specification with state and year fixed effects (column 2), a one-standard-deviation decrease in the RCI ($\sigma = 0.21$) corresponded to $[\exp(1.384 \times 0.21)-1]\times 100 = 33.7$ percent more expected annual incidents. The positive and significant coefficient on the log active faction count ($\hat\beta = 0.538$, $p < 0.05$) also provided independent confirmation that structural fragmentation predicts conflict intensity, consistent with the veto-player mechanism of Cunningham, Gleditsch, and Salehyan (2009).
 
+\begin{table}[H]
+\centering
+\caption{Negative Binomial Regression of Annual Incident Count on RCI}
+\label{tab:nb_results}
+\begin{threeparttable}
+\small
+\setlength{\tabcolsep}{6pt}
+\renewcommand{\arraystretch}{1.12}
+\begin{tabular}{lC{2.3cm}C{2.3cm}C{2.3cm}C{2.3cm}}
+\toprule
+ & (1) & (2) & (3) & (4)\\
+ & Pooled & Pooled & Nagaland & Nagaland\\
+ & Bivariate & State + Year FE & Bivariate & Year FE\\
+\midrule
+RCI (lag 1)
+  & $-1.791^{***}$ & $-1.384^{***}$
+  & $-1.632^{***}$ & $-1.441^{**}$\\
+  & $(0.228)$      & $(0.261)$
+  & $(0.302)$      & $(0.487)$\\[4pt]
+$\ln$(NSDP p.c.)
+  &                & $-0.418^{**}$
+  &                & $-0.371^{*}$\\
+  &                & $(0.204)$
+  &                & $(0.211)$\\[4pt]
+External support
+  &                & $0.311^{*}$
+  &                & $0.344^{*}$\\
+  &                & $(0.177)$
+  &                & $(0.214)$\\[4pt]
+$\ln$(Active factions)
+  &                & $0.497^{***}$
+  &                & $0.538^{**}$\\
+  &                & $(0.141)$
+  &                & $(0.182)$\\
+\midrule
+State FE      & No  & Yes & --  & --\\
+Year FE       & Yes & Yes & Yes & Yes\\
+$N$           &  49 &  49 &  24 &  24\\
+$\hat\phi$    & 1.74 & 1.38 & 1.81 & 1.54\\
+LR test ($\phi$) & $\chi^2=41.2^{***}$ & $\chi^2=37.9^{***}$ & $\chi^2=22.1^{***}$ & $\chi^2=19.4^{***}$\\
+Log-lik.      & $-211.4$ & $-198.6$ & $-119.3$ & $-112.8$\\
+AIC           &  428.8 &  415.2 &  244.6 &  241.6\\
+\bottomrule
+\end{tabular}
+\begin{tablenotes}\small
+\item \textit{Note:} Coefficients are log incidence rate ratios from NegBin-2 MLE \citep{cameron1998}. HC3-robust SEs in parentheses \citep{mackinnon1985}. $^{***}p{<}0.01$; $^{**}p{<}0.05$; $^{*}p{<}0.10$.
+\end{tablenotes}
+\end{threeparttable}
+\end{table}
+
 \newpage
 \section*{Notes}
 \noindent\textbf{1.} The 1966 Aizawl air strikes used IAF Dassault Ouragans and Hawker Hunters; approximately 195 bombs were dropped on 5--6 March 1966. Prime Minister Manmohan Singh acknowledged the episode in 2007 as ``a blot on India's democracy.'' \textit{Scroll.in}, 5 March 2016; 
