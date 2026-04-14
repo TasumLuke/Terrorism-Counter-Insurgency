@@ -115,7 +115,7 @@ As a validation check, the RCI also tracks the observable features of the rebel 
 
 \subsection{Estimation Strategy}
 
-The dependent variable, annual conflict incident counts, exhibits severe overdispersion (variance-to-mean ratio of 58.6 in the Nagaland series), which rules out the Poisson model and motivates a negative binomial primary estimator \citep{cameron1998}. This approach is standard in the conflict literature: \citet{cunningham2009} use negative binomial regression for conflict duration counts and \citet{lyall2009} uses it for insurgent attack frequencies. The model specifies:
+Annual conflict incidents, which serve as the dependent variable in this study, are strongly overdispersed (with variance to mean ratio equaling 58.6 in the Nagaland series). Therefore, the Poisson distribution does not fit in this case; instead, a negative binomial estimator is used as the primary estimate \citep{cameron1998}. The negative binomial regression technique is commonly applied to modeling conflict data as it is employed by \citet{cunningham2009} when studying conflict duration counts and by \citet{lyall2009} to model insurgent attack frequencies. According to the model,
 \begin{align}
 Y_{ct} &\sim \mathrm{NegBin}(\mu_{ct},\,\phi), \notag\\
 \ln \mu_{ct} &= \beta_0 + \beta_1\,\mathrm{RCI}_{c,t-1} + \beta_2 \ln y_{ct} + \beta_3\,\mathrm{EXT}_{ct} + \delta_c + \tau_t,
