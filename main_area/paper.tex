@@ -82,6 +82,37 @@ The second mechanism is tangible rather than symbolic. In granting a ceasefire t
 
 The Naga-Mizo pair is almost an ideal Most Similar Systems design as envisioned by \citet{przeworski1970}. The two cases have similarities in terms of proximity of the two regions within a 200-kilometer radius, mostly tribal and Christian population, governance under Armed Forces Special Powers Act, backwardness as compared to India’s national average, subject to bombing by the Indian Air Force \footnote{See Note 10.}, and similar counters to insurgency. However, there is a difference in treatment, with DA referring to the case in Mizoram, where India had only one channel for negotiations and sought an accommodation, while FC refers to the case of Nagaland, where India utilized differential ceasefires and selective recognition of breakaway groups to ensure none of them became predominant.
 
+\subsection{The Rebel Cohesion Index}
+
+The RCI is an annually measured composite for Nagaland (1963--2022) and Mizoram (1966--1990), constructed from three independently verifiable components. The choice of a composite index follows the standard practice in the conflict and political economy literatures of constructing multi-dimensional indices when the underlying theoretical construct is itself multi-dimensional and no single observable perfectly captures it. Each component is grounded in an established measure, and the sensitivity of results to alternative weighting schemes is evaluated directly in Section~\ref{sec:robustness}.
+
+The first component is the Organisational Fragmentation Score (OFS), defined as the complement of the Herfindahl-Hirschman Index (HHI) of factional cadre share. The HHI was introduced by \citet{herfindahl1950} and \citet{hirschman1945} as a measure of market concentration and has been widely adopted in the conflict literature to quantify rebel-group fragmentation, where a more concentrated movement corresponds to a less fragmented one:
+\begin{equation}
+\mathrm{OFS}_t = 1 - \sum_{i=1}^{F_t} s_{it}^2, \qquad s_{it} = \frac{n_{it}}{N_t}.
+\end{equation}
+Values range from zero (a perfectly unified movement with one faction holding all cadre) to approaching one (maximum fragmentation across many equal-sized factions).\footnote{See Note 12 for cadre data sources.} The OFS receives the highest weight ($\alpha = 0.40$) because the structural literature, particularly \citet{cunningham2009} and \citet{fjelde2012}, identifies the number and relative size of factions as the primary driver of conflict duration.
+
+The second component is the Internecine Violence Rate (IVR), defined as the share of total conflict fatalities attributable to insurgent-on-insurgent violence. Following the Laplace smoothing correction recommended by \citet{gelman2006} for proportions computed on small denominators:
+\begin{equation}
+\mathrm{IVR}_t = \frac{V^{\mathrm{int}}_t}{V^{\mathrm{tot}}_t + 1}.
+\end{equation}
+The IVR receives the second-highest weight ($\beta = 0.35$) because internecine violence is the most direct observable manifestation of the spoiler mechanism identified by \citet{stedman1997}.
+
+The third component is the Ceasefire Plurality Count (CPC), the number of distinct bilateral ceasefire agreements simultaneously active between India and separate factions in year $t$:
+\begin{equation}
+\mathrm{CPC}_t = \sum_{i=1}^{F_t} \mathbf{1}[c_{it} = 1].
+\end{equation}
+The CPC directly operationalizes the veto-player structure identified by \citet{cunningham2006,cunningham2009} and receives the lowest weight ($\gamma = 0.25$) because it is partly endogenous to the OFS, as new factions typically seek ceasefire recognition shortly after forming.
+
+The three components are min-max normalized to $[0,1]$ across the full pooled time series and combined:
+\begin{equation}
+\mathrm{RCI}_t = 1 - \bigl(\alpha\,\widehat{\mathrm{OFS}}_t + \beta\,\widehat{\mathrm{IVR}}_t + \gamma\,\widehat{\mathrm{CPC}}_t\bigr),
+\qquad \alpha + \beta + \gamma = 1,
+\end{equation}
+where higher values indicate greater organizational cohesion.
+
+As a validation check, the RCI tracks observable features of the rebel landscape with high fidelity. When the Forum for Naga Reconciliation conducted twenty-eight inter-factional mediation meetings in 2009 \citep{idsa2009}, the temporary improvement in cohesion coincided with an 85.4 percent collapse in fatalities. When the NSCN-KK formed in June 2011 and disrupted that reconciliation, the RCI declined and fatalities rebounded from 5 to 74 within two years.\footnote{See Note 9.} These within-case patterns provide face validation that the index captures the theoretical construct it is designed to measure.
+
 \newpage
 \section*{Notes}
 \noindent\textbf{1.} The 1966 Aizawl air strikes used IAF Dassault Ouragans and Hawker Hunters; approximately 195 bombs were dropped on 5--6 March 1966. Prime Minister Manmohan Singh acknowledged the episode in 2007 as ``a blot on India's democracy.'' \textit{Scroll.in}, 5 March 2016; 
