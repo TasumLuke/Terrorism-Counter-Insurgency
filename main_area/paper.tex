@@ -92,26 +92,26 @@ First component of this index is the Organisational Fragmentation Score (OFS), w
 \end{equation}
 Values span the continuum from zero (complete unity with one faction having all the cadres) to one (the most fragmented case with numerous equal factions).\footnote{See Note 12 for sources of cadre numbers.} The OFS is assigned the greatest weight ($\alpha = 0.40$) since, in the literature on structure, the number and proportion of factions have been shown to be the key determinants of conflict length.\citet{cunningham2009} \citet{fjelde2012}.
 
-The second component is the Internecine Violence Rate (IVR), defined as the share of total conflict fatalities attributable to insurgent-on-insurgent violence. Following the Laplace smoothing correction recommended by \citet{gelman2006} for proportions computed on small denominators:
+The second component is defined as the Internecine Violence Rate (IVR), which here is taken as the share of total conflict fatalities attributable to insurgent-on-insurgent violence. This is done following the Laplace smoothing correction recommended by \citet{gelman2006} for proportions computed on small denominators:
 \begin{equation}
 \mathrm{IVR}_t = \frac{V^{\mathrm{int}}_t}{V^{\mathrm{tot}}_t + 1}.
 \end{equation}
 The IVR receives the second-highest weight ($\beta = 0.35$) because internecine violence is the most direct observable manifestation of the spoiler mechanism identified by \citet{stedman1997}.
 
-The third component is the Ceasefire Plurality Count (CPC), the number of distinct bilateral ceasefire agreements simultaneously active between India and separate factions in year $t$:
+The third component is taken as the Ceasefire Plurality Count (CPC), which is the number of distinct bilateral ceasefire agreements simultaneously active between India and separate factions in year $t$:
 \begin{equation}
 \mathrm{CPC}_t = \sum_{i=1}^{F_t} \mathbf{1}[c_{it} = 1].
 \end{equation}
-The CPC directly operationalizes the veto-player structure identified by \citet{cunningham2006,cunningham2009} and receives the lowest weight ($\gamma = 0.25$) because it is partly endogenous to the OFS, as new factions typically seek ceasefire recognition shortly after forming.
+The CPC directly operationalizes the veto-player structure identified by \citet{cunningham2006,cunningham2009} and herein, receives the lowest weight ($\gamma = 0.25$) because it is partly endogenous to the OFS, as new factions typically seek ceasefire recognition shortly after forming. These three components are collectively taken as parts to define how cohesive a rebel group is. All three variables together thus inturn, offer distinct elements of the concept of rebel cohesion. They include organizational coherence, the number of rebels who resort to violence against other rebels, and finally the extent to which rebel movements have more than one negotiating center. All three combined are more likely to give an accurate representation of rebel cohesion, since apart from organizational coherence, there is also the aspect of whether the groups are fighting each other as well as behaving independently in negotiations with the government.
 
-The three components are min-max normalized to $[0,1]$ across the full pooled time series and combined:
+The three components are then, min-max normalized to $[0,1]$ across the full pooled time series and combined:
 \begin{equation}
 \mathrm{RCI}_t = 1 - \bigl(\alpha\,\widehat{\mathrm{OFS}}_t + \beta\,\widehat{\mathrm{IVR}}_t + \gamma\,\widehat{\mathrm{CPC}}_t\bigr),
 \qquad \alpha + \beta + \gamma = 1,
 \end{equation}
 where higher values indicate greater organizational cohesion.
 
-As a validation check, the RCI tracks observable features of the rebel landscape with high fidelity. When the Forum for Naga Reconciliation conducted twenty-eight inter-factional mediation meetings in 2009 \citep{idsa2009}, the temporary improvement in cohesion coincided with an 85.4 percent collapse in fatalities. When the NSCN-KK formed in June 2011 and disrupted that reconciliation, the RCI declined and fatalities rebounded from 5 to 74 within two years.\footnote{See Note 9.} These within-case patterns provide face validation that the index captures the theoretical construct it is designed to measure.
+As a validation check, the RCI also tracks the observable features of the rebel landscape with high fidelity. For instance, when the Forum for Naga Reconciliation conducted twenty-eight inter-factional mediation meetings in 2009 \citep{idsa2009}, the temporary improvement in cohesion coincided with an 85.4 percent collapse in fatalities. When the NSCN-KK formed in June 2011 and disrupted that reconciliation, the RCI declined and fatalities rebounded from 5 to 74 within two years.\footnote{See Note 9.} These within-case patterns provide face validation that the RCI, index captures the theoretical construct it is designed to measure more accurately than other individual indexes.
 
 \newpage
 \section*{Notes}
