@@ -5,3 +5,10 @@
 The two insurgencies have similar structures, but there is one major difference: Mizoram enjoyed a single channel of negotiations, resulting in a durable peace agreement in 1986, whereas Nagaland was subject to fragmentation-and-containment strategy for a whopping period of 75 years. We compute a Rebel Cohesion Index and apply it to the MHA dataset; a one SD decrease in cohesion is associated with 33.7% more incidents annually.
 
 ## Structure
+```
+main_area/         paper and math appendix (LaTeX)
+data/              nagaland_mizoram.json
+research_tools/    analysis code
+dist/              compiled PDF
+Makefile           local build
+```
