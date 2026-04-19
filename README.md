@@ -13,3 +13,12 @@ dist/              compiled PDF
 Makefile           local build
 ```
 ## Running it
+```bash
+pip install numpy scipy statsmodels matplotlib
+cd research_tools
+python3 analysis.py
+```
+
+Loads the JSON, verifies every number in the paper, runs the regressions, builds the figures.
+
+`toolkit.py` is case-agnostic (OFS, IVR, CPC, NegBin, ITS, mediation). `analysis.py` applies it to the India case.
