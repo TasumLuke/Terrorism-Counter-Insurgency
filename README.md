@@ -8,7 +8,7 @@ The two insurgencies have similar structures, but there is one major difference:
 ```
 main_area/         paper and math appendix (LaTeX)
 data/              nagaland_mizoram.json
-research_tools/    analysis code
+research_tools/    analysis code and scratch work
 dist/              compiled PDF
 Makefile           local build
 ```
